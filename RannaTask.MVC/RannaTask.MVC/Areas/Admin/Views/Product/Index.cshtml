@@ -1,0 +1,89 @@
+﻿@model RannaTask.Entities.Dtos.ProductListDto
+@using RannaTask.Shared.Utilities.Results.ComplexTypes
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Ürünler";
+}
+
+<ol class="breadcrumb mb-3 mt-2">
+    <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index">Admin</a></li>
+    <li class="breadcrumb-item active"><a asp-area="Admin" asp-controller="Product" asp-action="Index">Ürünler</a></li>
+</ol>
+
+
+@if (Model.ResultStatus == ResultStatus.Success)
+{
+    <div id="modalPlaceHolder" aria-hidden="true"></div>
+    <div class="card mb-4 mt-2">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Kullacılar
+        </div>
+        <div class="card-body">
+            <div class="spinner-border" role="status" style="display: none;">
+                <span class="sr-only">Yükleniyor...</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="productsTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ürün Kodu</th>
+                            <th>Ürün Adı</th>
+                            <th>Fiyatı</th>
+                            <th>Resim</th>
+                            <th>Silinmiş Mi?</th>
+                            <th>Oluşturulma Tarihi</th>
+                            <th>Son Düzenlenme Tarihi</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ürün Kodu</th>
+                            <th>Ürün Adı</th>
+                            <th>Fiyatı</th>
+                            <th>Resim</th>
+                            <th>Silinmiş Mi?</th>
+                            <th>Oluşturulma Tarihi</th>
+                            <th>Son Düzenlenme Tarihi</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var product in Model.Products)
+                        {
+                            <tr name="@product.Id">
+                                <td>@product.Id</td>
+                                <td>@product.Code</td>
+                                <td>@product.Name</td>
+                                <td>@product.Price</td>
+                                <td><img src="~/image/@product.Picture" alt="@product.Picture" class="my-image-table" /></td>
+                                <td>@(product.IsDeleted ? "Evet" : "Hayır")</td>
+                                <td>@product.CreatedDate.ToShortDateString()</td>
+                                <td>@product.ModifiedDate.ToShortDateString()</td>
+
+                                <td>
+                                    <button class="btn btn-primary btn-sm btn-update" data-id="@product.Id"><span class="fas fa-edit"></span></button>
+                                    <button class="btn btn-danger btn-sm btn-delete" data-id="@product.Id"><span class="fas fa-minus-circle"></span></button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+@if (Model.ResultStatus == ResultStatus.Error)
+{
+    <div class="alert alert-danger mt-3">
+        @Model.Message <br />
+        Dashboard sayfasına geri dönmek için lütfen <a class="alert-link" asp-area="Admin" asp-controller="Home" asp-action="Index">tıklayınız.</a>
+    </div>
+}
+@section Scripts
+    {
+    <script src="~/js/productIndex.js" type="application/ecmascript"></script>
+}
